@@ -47,8 +47,10 @@ async def on_member_join(member):
     # checking to see if it is real
     if current_channel is not None:
         if current_channel.permissions_for(member.guild.me).send_messages:
+            # sends to channel
             await current_channel.send(BOT_GREATING[random.randint(0, len(BOT_GREATING))])
         else:
+            # sends to member if channel is not real
             await member.send(BOT_GREATING[random.randint(0, len(BOT_GREATING))])
 
 # command handeling
