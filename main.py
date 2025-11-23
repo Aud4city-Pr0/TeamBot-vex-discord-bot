@@ -78,10 +78,11 @@ async def team(ctx, team_name):
     #TODO: switch to discord's built-in markdown system (Embeds)
     #checking to see if data is a dict
     if type(data) is dict:
-        await ctx.send(f"""Team Name: {data["data"][0]['team_name']}
-                       \n Team Number: {data["data"][0]['number']}
-                       \n Robot Name: {data["data"][0]['robot_name']}
-                       \n Org: {data["data"][0]['organization']}""")
+        await ctx.send(f"""Information for team: **{team_name}**
+                       \n- Team Name: {data["data"][0]['team_name']}
+                       \n- Team Number: {data["data"][0]['number']}
+                       \n- Robot Name: {data["data"][0]['robot_name']}
+                       \n- Org: {data["data"][0]['organization']}""")
 
 #TODO: get page funtionality working first
 #@bot.command()
@@ -91,17 +92,14 @@ async def team(ctx, team_name):
 @bot.command()
 async def events(ctx, team):
     data = requestHandler.get_events_attended_by_team(team)
+    season_name = requestHandler.get_current_season_name()
 
     # ai code, will rewirte message data later
     if not data:
         return await ctx.send(f"No event data found for team `{team}`.")
-
-    events_list = data.get("data", [])
-    if not events_list:
-        return await ctx.send(f"Team `{team}` has no events this season.")
-
-    msg = f"Events attended by **{team}**:\n"
-    for event in events_list:
+    
+    msg = f"Events attended by **{team}** in the season: **{season_name}**:\n"
+    for event in data:
         msg += f"- {event['name']} ({event['start'][:10]})\n"
 
     await ctx.send(msg)

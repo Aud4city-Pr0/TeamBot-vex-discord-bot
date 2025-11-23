@@ -88,6 +88,13 @@ def get_current_season_id():
         print(f"Current season name: {season_data["data"][0]['name']}, season id: {season_data["data"][0]["id"]}")
         return season_data["data"][0]["id"]
 
+def get_current_season_name():
+    season_data = get_rb_events_data(EndpointType.ENDPOINT_SEASONS.value, SEASON_PARAMS)
+    # checking to see if we have data
+    if season_data:
+        print(json.dumps(season_data, indent=4))
+        return season_data["data"][0]["name"]
+
 def get_team_id(team_number):
     # getting the team id from their number
     TEAM_PARAMS["number[]"] = [team_number]
@@ -142,7 +149,11 @@ def get_events_attended_by_team(team):
         TEAM_EVENT_PARAMS["id"] = team_id
         TEAM_EVENT_PARAMS["season[]"] = [season_id]
         events_data = get_rb_events_data(f"/teams/{TEAM_EVENT_PARAMS['id']}/events", TEAM_EVENT_PARAMS)
-        return events_data
+        if events_data:
+            print(json.dumps(events_data, indent=4))
+            events = events_data.get("data", [])
+            return events
+
 
 
 
