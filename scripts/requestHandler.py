@@ -36,7 +36,7 @@ TEAM_PARAMS = {
 
 EVENT_PARAMS = {
     "program[]": [1],
-    "season[]": [180]
+    "evenTypes[]": ["tornament", "league"] 
 }
 
 # speical request params
@@ -89,6 +89,7 @@ def get_team_from_number(team_number):
         print(f"Team Data: {json.dumps(team_data, indent=4)}")
         return team_data
 
+#TODO: make a specialized get function that deals with pages before using skills or awards commands
 def get_team_skills(team_name):
     # setting the team id info
     team_info = get_team_from_number(team_name)
@@ -100,6 +101,18 @@ def get_team_skills(team_name):
            print(f"Team Data: {json.dumps(skills_data, indent=4)}")
            return skills_data
 
+# event function
+def get_event_by_name(event_name):
+    # getting data from "/events" request
+    event_info = get_rb_events_data(EndpointType.ENDPOINT_EVENTS.value, EVENT_PARAMS)
+    #checking for event info
+    if event_info:
+        # getting event name
+        print(f"event data: {json.dumps(event_info, indent=4)}")
+        for event in event_info:
+            for key, value in event.items():
+                if key == "name" and value == event_name:
+                    print("event name found!")
     
 
 
