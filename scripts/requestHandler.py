@@ -65,15 +65,21 @@ def get_team_from_number(team_number):
     # setting the number param
     TEAM_PARAMS["number[]"] = [team_number]
     #checking to see if all of the params are not empty
-    for para in TEAM_PARAMS.keys():
-        print(para)
+    for param in TEAM_PARAMS.values():
+        if param != None:
+            print("All values are accounted for.")
+        else:
+            print("a param is empty.")
+    
+    team_data = get_rb_events_data(EndpointType.ENDPOINT_TEAMS.value, TEAM_PARAMS)
+    if team_data:
+        print(json.dumps(team_data, indent=4))
 
     
 
 
 # example of usage
 #event_data = get_rb_events_data(EndpointType.ENDPOINT_EVENTS.value, EVENT_PARAMS)
-get_team_from_number("4303D")
 
 #if event_data:
     #print(json.dumps(event_data, indent=4))
