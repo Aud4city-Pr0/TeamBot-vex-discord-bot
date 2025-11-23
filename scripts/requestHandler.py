@@ -36,7 +36,8 @@ TEAM_PARAMS = {
 
 EVENT_PARAMS = {
     "program[]": [1],
-    "evenTypes[]": ["tornament", "league"] 
+    "eventTypes[]": ["tornament", "league"],
+    "season[]": [197] # for push back
 }
 
 # speical request params
@@ -105,14 +106,12 @@ def get_team_skills(team_name):
 def get_event_by_name(event_name):
     # getting data from "/events" request
     event_info = get_rb_events_data(EndpointType.ENDPOINT_EVENTS.value, EVENT_PARAMS)
-    #checking for event info
-    if event_info:
-        # getting event name
-        print(f"event data: {json.dumps(event_info, indent=4)}")
-        for event in event_info:
-            for key, value in event.items():
-                if key == "name" and value == event_name:
-                    print("event name found!")
+    for event_data in event_info:
+        print("running search...")
+        event_names = [event_data["name"] for event in event_info]
+        for name in event_names:
+            if name == event_name:
+                return name
     
 
 
