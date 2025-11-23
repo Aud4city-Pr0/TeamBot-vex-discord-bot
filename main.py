@@ -89,9 +89,23 @@ async def team(ctx, team_name):
     #data = requestHandler.get_team_skills(team_name)
 
 @bot.command()
-async def event(ctx, name):
-    data = requestHandler.get_event_by_name(name)
-    await ctx.send(data)
+async def events(ctx, team):
+    data = requestHandler.get_events_attended_by_team(team)
+
+    # ai code, will rewirte message data later
+    if not data:
+        return await ctx.send(f"No event data found for team `{team}`.")
+
+    events_list = data.get("data", [])
+    if not events_list:
+        return await ctx.send(f"Team `{team}` has no events this season.")
+
+    msg = f"Events attended by **{team}**:\n"
+    for event in events_list:
+        msg += f"- {event['name']} ({event['start'][:10]})\n"
+
+    await ctx.send(msg)
+
 
 # running the bot
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
