@@ -83,5 +83,9 @@ async def team(ctx, team_name):
                        \n Robot Name: {data["data"][0]['robot_name']}
                        \n Org: {data["data"][0]['organization']}""")
 
+@bot.command()
+async def skills(ctx, team_name):
+    data = requestHandler.get_team_skills(team_name)
+
 # running the bot
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)

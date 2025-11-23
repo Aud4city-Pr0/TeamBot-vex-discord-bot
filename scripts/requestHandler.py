@@ -14,7 +14,7 @@ API_TOKEN = os.getenv('ROBOT_EVENTS_API_TOKEN')
 # base url
 BASE_URL = "https://www.robotevents.com/api/v2"
 
-# endpoint Enum class
+# endpoint Enum class, only used for basic api interactions
 class EndpointType(Enum):
     ENDPOINT_TEAMS = "/teams"
     ENDPOINT_EVENTS = "/events"
@@ -39,6 +39,18 @@ EVENT_PARAMS = {
     "season[]": [180]
 }
 
+# speical request params
+MATCH_PARAMS = {
+    # default is zero
+    "id": 0,
+    "season[]": [180]
+}
+
+SKILLS_PARAMS = {
+    #default is zero
+    "id": 0,
+}
+
 # test request function
 #TODO: make function useable by bot after testing is complete
 
@@ -57,10 +69,10 @@ def get_rb_events_data(endpointType, params=None):
         print(f"Satus Code {reponse.status_code}")
         return reponse.json()
     except requests.exceptions.RequestException as e:
-        print(f"An Error occured")
+        print(f"An Error occured {e}")
         return None
 
-
+#TODO: finish other commands and come back to add match statistics
 # moudle functions
 def get_team_from_number(team_number):
     # setting the number param
@@ -74,8 +86,19 @@ def get_team_from_number(team_number):
     
     team_data = get_rb_events_data(EndpointType.ENDPOINT_TEAMS.value, TEAM_PARAMS)
     if team_data:
-        print(json.dumps(team_data, indent=4))
+        print(f"Team Data: {json.dumps(team_data, indent=4)}")
         return team_data
+
+def get_team_skills(team_name):
+    # setting the team id info
+    team_info = get_team_from_number(team_name)
+    if team_info:
+        # getting skills
+       SKILLS_PARAMS["id"] = team_info['data'][0]["id"]
+       if SKILLS_PARAMS["id"]:
+           skills_data = get_rb_events_data(f"/teams/{SKILLS_PARAMS['id']}/skills", SKILLS_PARAMS)
+           print(f"Team Data: {json.dumps(skills_data, indent=4)}")
+           return skills_data
 
     
 
