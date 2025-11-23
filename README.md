@@ -1,2 +1,11 @@
 ### WELCOME TO TeamBot! A DISCORD BOT FOR VEX ROBOTEVENTS! ###
-This is the main repo for this bot!
+This is a discord bot powered by discord.py and the robotevents api.
+
+There are a few commands, with many more planed in the future.
+
+Here is a list of the current commands
+1. !team
+2. !event
+3. !info
+4. !skills
+5. !awards

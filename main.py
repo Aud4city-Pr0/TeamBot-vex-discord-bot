@@ -91,6 +91,7 @@ async def team(ctx, team_name):
 @bot.command()
 async def event(ctx, name):
     data = requestHandler.get_event_by_name(name)
+    await ctx.send(data)
 
 # running the bot
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
