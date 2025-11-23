@@ -10,6 +10,9 @@ import logging
 from dotenv import load_dotenv
 import os
 
+# bot modules
+from scripts import requestHandler
+
 # random join messages
 import random
 
@@ -71,7 +74,13 @@ async def version(ctx):
 
 @bot.command()
 async def team(ctx, team_name):
-    await ctx.send(f"Placeholder text: {team_name}")
+    data = requestHandler.get_team_from_number(team_name)
+    #TODO: switch to discord's built-in markdown system (Embeds)
+    await ctx.send(
+        f"Team Name: {data['data'][0]['team_name']}\n"
+        f"Robot Number: {data['data'][0]['team_number']}\n"
+        f"Organization: {data['data'][0]['organization']}"
+    )
 
 # running the bot
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
