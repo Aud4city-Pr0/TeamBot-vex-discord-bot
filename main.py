@@ -16,13 +16,8 @@ from modules import requestHandler
 # random join messages
 import random
 
-<<<<<<< HEAD
 BOT_GREETING = [
-    "Hi there, welcome to the sever!",
-=======
-BOT_GREATING = [
     "Hi there, welcome to the server!",
->>>>>>> refs/remotes/origin/master
     "Welcome to the server :D, have fun!",
     "Hello and welcome!",
     "Hey! Glad you could join us!"
