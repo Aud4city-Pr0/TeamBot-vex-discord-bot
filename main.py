@@ -76,16 +76,21 @@ async def version(ctx):
 async def team(ctx, team_name):
     data, record_info = requestHandler.get_team_from_number(team_name)
     #TODO: switch to discord's built-in markdown system (Embeds)
-    #checking to see if data is a dict
+    #checking to see if data is real
     if data:
-        await ctx.send(f"Current season stats for team: **{team_name}**")
+        await ctx.send("Team information: ")
 
+    #checking to see if data is a dict
     if type(data) is dict:
         await ctx.send(f"""
                        \n- **Team Name**: {data["data"][0]['team_name']}
                        \n- **Team Number**: {data["data"][0]['number']}
                        \n- **Robot Name**: {data["data"][0]['robot_name']}
                        \n- **Org**: {data["data"][0]['organization']}
+                       """)
+        
+        await ctx.send("Team statistics: ")
+        await ctx.send(f"""
                        \n- 🏆️ **Matches Won:** {record_info.get("wins")} 
                        \n- 😔 **Matches Lost:** {record_info.get("losses")}
                        \n- 🤝 **Matches Tided:** {record_info.get("ties")}""")
