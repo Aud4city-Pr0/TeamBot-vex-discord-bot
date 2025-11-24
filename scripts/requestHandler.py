@@ -49,12 +49,13 @@ SEASON_PARAMS = {
 MATCH_PARAMS = {
     # default is zero
     "id": 0,
-    "season[]": [180]
+    "season[]": []
 }
 
 SKILLS_PARAMS = {
     #default is zero
     "id": 0,
+    "season[]": []
 }
 
 # test request function
