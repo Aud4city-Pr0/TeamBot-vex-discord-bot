@@ -17,7 +17,7 @@ from scripts import requestHandler
 import random
 
 BOT_GREATING = [
-    "Hi there, welcome to the sever!",
+    "Hi there, welcome to the server!",
     "Welcome to the server :D, have fun!",
     "Hello and welcome!",
     "Hey! Glad you could join us!"
@@ -59,13 +59,13 @@ async def on_member_join(member):
 # command handeling
 @bot.command()
 async def info(ctx):
-    await ctx.send(f"""{ctx.author.mention}, you have requseted help about how to use me, here are my commands:
-                   \n 1. !info - displays commands that are used with this bot
-                   \n 2. !team - looks for vex teams based of their number and shows statistics about them (eg. 1234D)
-                   \n 3. !event - shows the current events that a team is enrolled in/attended for the current season
-                   \n 4. !version - says the current version of the bot
-                   \n 5. !skills - gets skills information about a team from a certain season
-                   \n 6. !awards - gets award information about a team from a certian season""")
+    await ctx.send(f"""{ctx.author.mention}, you have requested help about how to use me, here are my commands:
+                   \n 1. !info - Displays commands that are used with this bot
+                   \n 2. !team - Looks for VEX V5 teams based on their number and shows statistics about them (eg. 4303D)
+                   \n 3. !event - Shows the current events that a team is enrolled in/has attended for the current season
+                   \n 4. !version - States the current version of the bot
+                   \n 5. !skills - Gets skills information about a team from a certain season
+                   \n 6. !awards - Gets award information about a team from a certain season""")
 
 @bot.command()
 async def version(ctx):
@@ -78,7 +78,7 @@ async def team(ctx, team_name):
     #TODO: switch to discord's built-in markdown system (Embeds)
     #checking to see if data is real
     if data:
-        await ctx.send("Team information: ")
+        await ctx.send("Team Information: ")
 
     #checking to see if data is a dict
     if type(data) is dict:
@@ -86,14 +86,14 @@ async def team(ctx, team_name):
                        \n- **Team Name**: {data["data"][0]['team_name']}
                        \n- **Team Number**: {data["data"][0]['number']}
                        \n- **Robot Name**: {data["data"][0]['robot_name']}
-                       \n- **Org**: {data["data"][0]['organization']}
+                       \n- **Organization**: {data["data"][0]['organization']}
                        """)
         
-        await ctx.send("Team statistics: ")
+        await ctx.send("Team Statistics: ")
         await ctx.send(f"""
                        \n- 🏆️ **Matches Won:** {record_info.get("wins")} 
                        \n- 😔 **Matches Lost:** {record_info.get("losses")}
-                       \n- 🤝 **Matches Tided:** {record_info.get("ties")}""")
+                       \n- 🤝 **Matches Tied:** {record_info.get("ties")}""")
 
 #TODO: get page funtionality working first
 #@bot.command()
