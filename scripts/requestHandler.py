@@ -108,6 +108,51 @@ def get_team_id(team_number):
     info = get_rb_events_data(EndpointType.ENDPOINT_TEAMS.value, TEAM_PARAMS)
     if info:
         return info["data"][0]["id"]
+    
+#match record functons
+def get_match_record_from_team(team):
+    Record_Dictoinary = {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0
+    }
+    #getting the season id and team id
+    season_id = get_current_season_id()
+    team_id = get_team_id(team)
+
+    #checking to see if we have ids
+    if not season_id and team_id:
+        return None
+    
+    # setting param info
+    MATCH_PARAMS["id"] = team_id
+    MATCH_PARAMS["season[]"] = season_id
+    
+    # getting the rankings
+    ranking_data = get_rb_events_data(f"/teams/{MATCH_PARAMS['id']}/rankings", MATCH_PARAMS)
+
+    #checking to see if we have data
+    if not ranking_data or "data" not in ranking_data:
+        return None
+    
+    # record vars
+    total_wins = 0
+    total_losses = 0
+    total_ties = 0
+
+    # looping throught each final rank in event
+    for event_ranking in ranking_data["data"]:
+        total_wins += event_ranking.get("wins", 0)
+        total_losses += event_ranking.get("losses", 0)
+        total_ties += event_ranking.get("ties", 0)
+    
+    #returning the data
+    Record_Dictoinary["wins"] = total_wins
+    Record_Dictoinary["losses"] = total_losses
+    Record_Dictoinary["ties"] = total_ties
+    return Record_Dictoinary
+    
+
 
 
 #TODO: finish other commands and come back to add match statistics
@@ -125,7 +170,8 @@ def get_team_from_number(team_number):
     team_data = get_rb_events_data(EndpointType.ENDPOINT_TEAMS.value, TEAM_PARAMS)
     if team_data:
         print(f"Team Data: {json.dumps(team_data, indent=4)}")
-        return team_data
+        record_data = get_match_record_from_team(team_number)
+        return team_data, record_data
 
 #TODO: make a specialized get function that deals with pages before using skills or awards commands
 def get_team_skills(team_name):
@@ -154,6 +200,8 @@ def get_events_attended_by_team(team):
             print(json.dumps(events_data, indent=4))
             events = events_data.get("data", [])
             return events
+
+
 
 
 
