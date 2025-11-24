@@ -1,5 +1,5 @@
 ### WELCOME TO TeamBot! A DISCORD BOT FOR VEX ROBOTEVENTS! ###
-This is a discord bot writen in python 🐍 and powered by discord.py and the robotevents api 🤖.
+This is a discord bot writen in python 🐍 and powered by [discord.py](https://discordpy.readthedocs.io/en/latest/api.html) and the [robotevents api](https://www.robotevents.com/api/v2) 🤖.
 
 💻️ There are a few commands, with many more planed in the future. 💻️
 
