@@ -79,10 +79,10 @@ async def team(ctx, team_name):
     #checking to see if data is a dict
     if type(data) is dict:
         await ctx.send(f"""Information for team: **{team_name}**
-                       \n- Team Name: {data["data"][0]['team_name']}
-                       \n- Team Number: {data["data"][0]['number']}
-                       \n- Robot Name: {data["data"][0]['robot_name']}
-                       \n- Org: {data["data"][0]['organization']}""")
+                       \n- **Team Name**: {data["data"][0]['team_name']}
+                       \n- **Team Number**: {data["data"][0]['number']}
+                       \n- **Robot Name**: {data["data"][0]['robot_name']}
+                       \n- **Org**: {data["data"][0]['organization']}""")
 
 #TODO: get page funtionality working first
 #@bot.command()
