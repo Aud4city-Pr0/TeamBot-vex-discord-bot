@@ -106,8 +106,11 @@ def get_team_id(team_number):
             print("a param is empty.")
     
     info = get_rb_events_data(EndpointType.ENDPOINT_TEAMS.value, TEAM_PARAMS)
+    
     if info:
         return info["data"][0]["id"]
+    else:
+        return None
     
 #match record functons
 def get_match_record_from_team(team):

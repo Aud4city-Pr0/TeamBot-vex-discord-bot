@@ -78,7 +78,7 @@ async def info(ctx):
 @bot.command()
 async def version(ctx):
     #TODO: put verison info in a .json file before realsing bot
-    about_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ABOUT_DIALOUGE, f"About {bot.user}","TeamBot - A VEX Discord bot, created by: Zach D, version: 0.1.0")
+    about_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ABOUT_DIALOUGE, f"About {bot.user} - A VEX Discord bot", "created by: Zach D (4303D) Timothy (4303B),  version: 0.1.0")
     await ctx.send(embed=about_embed)
 
 @bot.command()
@@ -118,7 +118,7 @@ async def events(ctx, team):
         return await ctx.send(embed=error_embed)
     
     msg = f"Events attended by **{team}** in the season: **{season_name}**:\n"
-    data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Events:", msg)
+    data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, msg, "")
     for event in data:
         formated_event = f"{event['name']} ({event['start'][:10]})\n"
         data_embed.add_field(name=f"Event {data.index(event) + 1}:", value=formated_event, inline=False)
