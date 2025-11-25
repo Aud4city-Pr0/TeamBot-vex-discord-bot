@@ -83,13 +83,23 @@ async def version(ctx):
 
 @bot.command()
 async def team(ctx, team_name):
+    global bot_name
+    bot_name = ""
+    # getting data
     data, record_info = requestHandler.get_team_from_number(team_name)
+
     #checking to see if data is real and if it is a dictionary
     if data and type(data) is dict:
+        #checking to see if bot name exsits
+        if data["data"][0]['robot_name'] == "":
+            bot_name = "No bot name found or provided"
+        else:
+            bot_name = data["data"][0]["robot_name"]
+
         team_data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Team Information:", f"""
                        \n- **Team Name**: {data["data"][0]['team_name']}
                        \n- **Team Number**: {data["data"][0]['number']}
-                       \n- **Robot Name**: {data["data"][0]['robot_name']}
+                       \n- **Robot Name**: {bot_name}
                        \n- **Organization**: {data["data"][0]['organization']}
                        """)
         await ctx.send(embed=team_data_embed)
