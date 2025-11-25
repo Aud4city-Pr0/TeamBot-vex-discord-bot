@@ -1,4 +1,5 @@
 # The main file of the project
+# created by: Zach
 
 # imports, the requests part of the bot will be handled in another script
 # discord api
@@ -12,6 +13,8 @@ import os
 
 # bot modules
 from modules import requestHandler
+from modules import embedParser
+from modules.embedParser import EmbedDialougeType
 
 # random join messages
 import random
@@ -59,41 +62,45 @@ async def on_member_join(member):
 # command handeling
 @bot.command()
 async def info(ctx):
-    await ctx.send(f"""{ctx.author.mention}, you have requested help about how to use me, here are my commands:
+    # setting our embed
+    embed_to_say = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "you have requested help about how to use me, here are my commands:", f"""
                    \n 1. !info - Displays commands that are used with this bot
                    \n 2. !team - Looks for VEX V5 teams based on their number and shows statistics about them (eg. 4303D)
                    \n 3. !event - Shows the current events that a team is enrolled in/has attended for the current season
                    \n 4. !version - States the current version of the bot
                    \n 5. !skills - Gets skills information about a team from a certain season
                    \n 6. !awards - Gets award information about a team from a certain season""")
+    
+    # checking to make sure that the embed is ready
+    if embed_to_say:
+        await ctx.send(embed=embed_to_say)
 
 @bot.command()
 async def version(ctx):
     #TODO: put verison info in a .json file before realsing bot
-    await ctx.send("TeamBot - A VEX Discord bot, created by: Zach D, version: 0.1.0")
+    about_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ABOUT_DIALOUGE, f"About {bot.user}","TeamBot - A VEX Discord bot, created by: Zach D, version: 0.1.0")
+    await ctx.send(embed=about_embed)
 
 @bot.command()
 async def team(ctx, team_name):
     data, record_info = requestHandler.get_team_from_number(team_name)
-    #TODO: switch to discord's built-in markdown system (Embeds)
-    #checking to see if data is real
-    if data:
-        await ctx.send("Team Information: ")
-
-    #checking to see if data is a dict
-    if type(data) is dict:
-        await ctx.send(f"""
+    #checking to see if data is real and if it is a dictionary
+    if data and type(data) is dict:
+        team_data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Team Information:", f"""
                        \n- **Team Name**: {data["data"][0]['team_name']}
                        \n- **Team Number**: {data["data"][0]['number']}
                        \n- **Robot Name**: {data["data"][0]['robot_name']}
                        \n- **Organization**: {data["data"][0]['organization']}
                        """)
+        await ctx.send(embed=team_data_embed)
         
-        await ctx.send("Team Statistics: ")
-        await ctx.send(f"""
+        team_record_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Team Statistics:", f"""
                        \n- 🏆️ **Matches Won:** {record_info.get("wins")} 
                        \n- 😔 **Matches Lost:** {record_info.get("losses")}
                        \n- 🤝 **Matches Tied:** {record_info.get("ties")}""")
+        await ctx.send(embed=team_record_embed)
+    else:
+        await ctx.send(embed=embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, an error has occured D:", f"are you sure that team {team_name} exsits or is registered for this season?"))
 
 #TODO: get page funtionality working first
 #@bot.command()
@@ -107,13 +114,15 @@ async def events(ctx, team):
 
     # ai code, will rewirte message data later
     if not data:
-        return await ctx.send(f"No event data found for team `{team}`.")
+        error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, an error has occured D:", f"No event data found for team `{team}`.")
+        return await ctx.send(embed=error_embed)
     
     msg = f"Events attended by **{team}** in the season: **{season_name}**:\n"
+    data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Events:", msg)
     for event in data:
-        msg += f"- {event['name']} ({event['start'][:10]})\n"
-
-    await ctx.send(msg)
+        formated_event = f"{event['name']} ({event['start'][:10]})\n"
+        data_embed.add_field(name=f"Event {data.index(event) + 1}:", value=formated_event, inline=False)
+    await ctx.send(embed=data_embed)
 
 
 # running the bot
