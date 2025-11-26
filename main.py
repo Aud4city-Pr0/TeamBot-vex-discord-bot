@@ -27,13 +27,42 @@ BOT_GREETING = [
 ]
 
 # helper functions
-def convert_date(date_info):
-    # trying to convert it
+
+def format_event_date(date_string):
+    """
+    Convert variants like:
+      - "2024-02-12"
+      - "2024-02-12T00:00:00Z"
+      - "2024-02-12T00:00:00+00:00"
+      - "2024-02-12 00:00:00"
+    into "M/D/Y" (e.g. "2/12/2024").
+    Falls back to returning the original string if parsing fails.
+    """
+    if not date_string:
+        return "Unknown"
+
+    s = str(date_string).strip()
+
+    # Try ISO parsing first (handles timezone if we replace trailing Z)
     try:
-        dt = datetime.strptime(date_info, "%m/%d/%y")
-        return dt
-    except:
-        return date_info
+        if s.endswith("Z"):
+            # Python's fromisoformat doesn't accept trailing 'Z' — convert to +00:00
+            s_iso = s[:-1] + "+00:00"
+        else:
+            s_iso = s
+
+        # datetime.fromisoformat handles "YYYY-MM-DD" and "YYYY-MM-DDTHH:MM:SS[+HH:MM]"
+        dt = datetime.fromisoformat(s_iso)
+    except Exception:
+        # Fallback: try parsing first 10 chars as YYYY-MM-DD
+        try:
+            dt = datetime.strptime(s[:10], "%Y-%m-%d")
+        except Exception:
+            # couldn't parse — return original so you can see what's actually coming back
+            return date_string
+
+    # Build M/D/Y using integers so it's portable across platforms
+    return f"{dt.month}/{dt.day}/{dt.year}"
 
 # loading enviorment vars
 load_dotenv()
@@ -188,7 +217,7 @@ async def events(ctx, team):
         msg = f"Events attended by **{team}** in the season: **{season_name}**:"
         data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, msg, "")
         for event in data:
-            formated_event = f"- **Date:** ({convert_date(event.get("start", "")[:10])})\n"
+            formated_event = f"- **Date:** ({format_event_date(event.get("start", "")[:10])})\n"
             data_embed.add_field(name=f"Event {data.index(event) + 1}: {event.get("name")}", value=formated_event, inline=False)
         await ctx.send(embed=data_embed)
     else:
