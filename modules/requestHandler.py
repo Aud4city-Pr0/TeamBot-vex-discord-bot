@@ -25,7 +25,7 @@ class EndpointType(Enum):
 HEADERS = {
     "accept": "application/json",
     "Authorization": f'Bearer {API_TOKEN}',
-    "User-Agent": 'team-bot/1.0 (zachary.duriancik@gmail.com)'
+    "User-Agent": 'team-bot'
 }
 
 # the request params
@@ -46,7 +46,7 @@ SEASON_PARAMS = {
 }
 
 # speical request params
-MATCH_PARAMS = {
+TEAM_STATICS_PARAMS = {
     # default is zero
     "id": 0,
     "season[]": []
@@ -54,6 +54,12 @@ MATCH_PARAMS = {
 
 SKILLS_PARAMS = {
     #default is zero
+    "id": 0,
+    "season[]": []
+}
+
+TEAM_AWARDS_PARAMS = {
+    # default is zero
     "id": 0,
     "season[]": []
 }
@@ -129,11 +135,11 @@ def get_match_record_from_team(team):
         return None
     
     # setting param info
-    MATCH_PARAMS["id"] = team_id
-    MATCH_PARAMS["season[]"] = season_id
+    TEAM_STATICS_PARAMS["id"] = team_id
+    TEAM_STATICS_PARAMS["season[]"] = season_id
     
     # getting the rankings
-    ranking_data = get_rb_events_data(f"/teams/{MATCH_PARAMS['id']}/rankings", MATCH_PARAMS)
+    ranking_data = get_rb_events_data(f"/teams/{TEAM_STATICS_PARAMS['id']}/rankings", TEAM_STATICS_PARAMS)
 
     #checking to see if we have data
     if not ranking_data or "data" not in ranking_data:
@@ -206,13 +212,24 @@ def get_events_attended_by_team(team):
             events = events_data.get("data", [])
             return events
 
-
-
-
-
-
-# example of usage
-#event_data = get_rb_events_data(EndpointType.ENDPOINT_EVENTS.value, EVENT_PARAMS)
-
-#if event_data:
-    #print(json.dumps(event_data, indent=4))
+# team awards function
+def get_team_awards(team):
+    # getting team and season id
+    season_id = get_current_season_id()
+    team_id = get_team_id(team)
+    #checking to see if we have one
+    if season_id and team_id:
+        print("team id and season id have been recieved")
+        TEAM_AWARDS_PARAMS["id"] = team_id
+        TEAM_AWARDS_PARAMS["season[]"] = [season_id]
+        # getting awards data
+        awards_data = get_rb_events_data(f"/teams/{TEAM_AWARDS_PARAMS['id']}/awards", TEAM_AWARDS_PARAMS)
+        # checking to see if team has any awards data
+        if awards_data.get("data") != []:
+            print(f"Team: {team}, has award data")
+            data_list = awards_data.get("data", [])
+            print(data_list)
+            return data_list
+        else: 
+            print(f"Team: {team}, has no award data")
+            return None

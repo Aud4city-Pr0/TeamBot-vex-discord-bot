@@ -63,7 +63,7 @@ async def on_member_join(member):
 @bot.command()
 async def info(ctx):
     # setting our embed
-    embed_to_say = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "you have requested help about how to use me, here are my commands:", f"""
+    embed_to_say = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Bot Commands:", """
                    \n 1. !info - Displays commands that are used with this bot
                    \n 2. !team - Looks for VEX V5 teams based on their number and shows statistics about them (eg. 4303D)
                    \n 3. !event - Shows the current events that a team is enrolled in/has attended for the current season
@@ -89,10 +89,10 @@ async def team(ctx, team_name):
     data, record_info = requestHandler.get_team_from_number(team_name)
 
     #checking to see if data is real and if it is a dictionary
-    if data and type(data) is dict:
+    if data != None and type(data) is dict:
         #checking to see if bot name exsits
         if data["data"][0]['robot_name'] == "":
-            bot_name = "No bot name found or provided"
+            bot_name = "N/A"
         else:
             bot_name = data["data"][0]["robot_name"]
 
@@ -118,21 +118,58 @@ async def team(ctx, team_name):
     #data = requestHandler.get_team_skills(team_name)
 
 @bot.command()
+async def awards(ctx, team_name):
+    awards_list = requestHandler.get_team_awards(team_name)
+    # checking to see if we have info
+    if awards_list != None:
+        # creating the embed
+        award_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, f"Awards won by {team_name} this season:", "")
+        # loop through awards properly
+        for index ,award in enumerate(awards_list, start=1):
+            event_name = award.get("event", {}).get("name", "Unknown Event")
+            award_title = award.get("title", "Unknown Award")
+
+            qualifications = award.get("qualifications", [])
+            # If empty list → show "N/A"
+            if not qualifications:
+                qualifications_text = "N/A"
+            else:
+                #join list into readable string
+                qualifications_text = ", ".join(qualifications)
+
+            formatted_award = (
+                f"- **Event:** {event_name}\n"
+                f"- **Award:** {award_title}\n"
+                f"- **Qualifications:** {qualifications_text}"
+            )
+
+            award_embed.add_field(
+                name=f"Award {index}.",
+                value=formatted_award,
+                inline=False
+            )
+        await ctx.send(embed=award_embed)
+    else:
+        error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, but an error occured D:", f"are you sure that team {team_name} has an award?")
+        await ctx.send(embed=error_embed)
+
+@bot.command()
 async def events(ctx, team):
     data = requestHandler.get_events_attended_by_team(team)
     season_name = requestHandler.get_current_season_name()
 
     # ai code, will rewirte message data later
-    if not data:
+    if data != None:
+        msg = f"Events attended by **{team}** in the season: **{season_name}**:"
+        data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, msg, "")
+        for event in data:
+            formated_event = f"{event['name']} ({event['start'][:10]})\n"
+            data_embed.add_field(name=f"Event {data.index(event) + 1}:", value=formated_event, inline=False)
+        await ctx.send(embed=data_embed)
+    else:
         error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, an error has occured D:", f"No event data found for team `{team}`.")
         return await ctx.send(embed=error_embed)
     
-    msg = f"Events attended by **{team}** in the season: **{season_name}**:\n"
-    data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, msg, "")
-    for event in data:
-        formated_event = f"{event['name']} ({event['start'][:10]})\n"
-        data_embed.add_field(name=f"Event {data.index(event) + 1}:", value=formated_event, inline=False)
-    await ctx.send(embed=data_embed)
 
 
 # running the bot
