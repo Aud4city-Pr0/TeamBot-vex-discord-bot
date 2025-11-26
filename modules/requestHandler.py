@@ -187,14 +187,37 @@ def get_team_from_number(team_number):
 #TODO: make a specialized get function that deals with pages before using skills or awards commands
 def get_team_skills(team_name):
     # setting the team id info
-    team_info = get_team_from_number(team_name)
-    if team_info:
-        # getting skills
-       SKILLS_PARAMS["id"] = get_team_id(team_name)
-       if SKILLS_PARAMS["id"]:
-           skills_data = get_rb_events_data(f"/teams/{SKILLS_PARAMS['id']}/skills", SKILLS_PARAMS)
-           print(f"Team Data: {json.dumps(skills_data, indent=4)}")
-           return skills_data
+    team_id = get_team_id(team_name)
+    season_id = get_current_season_id()
+    if not team_id and season_id:
+        return None
+    
+    # setting skills params
+    SKILLS_PARAMS["id"] = team_id
+    SKILLS_PARAMS["season[]"] = season_id
+    response = get_rb_events_data(f"/teams/{team_id}/skills", SKILLS_PARAMS)
+
+    if not response or "data" not in response:
+        return None
+    
+    # driver and programming skills totals
+    driver = 0
+    programming = 0
+
+    # looping through repsonse
+    for skills_run in response.get("data"):
+        if skills_run["type"] == "driver":
+            driver = max(driver, skills_run.get("score", 0))
+        elif skills_run["type"] == "programming":
+            programming = max(programming, skills_run.get("score", 0))
+
+    # returning the data
+    return {
+        "driver": driver,
+        "programming": programming,
+        "total_score": driver + programming
+    }
+       
 
 
 # team event function

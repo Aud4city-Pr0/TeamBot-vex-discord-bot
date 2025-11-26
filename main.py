@@ -5,7 +5,7 @@
 # discord api
 import discord
 from discord.ext import commands
-
+from datetime import datetime
 # logging and enviroment variable loading
 import logging
 from dotenv import load_dotenv
@@ -25,6 +25,15 @@ BOT_GREETING = [
     "Hello and welcome!",
     "Hey! Glad you could join us!"
 ]
+
+# helper functions
+def convert_date(date_info):
+    # trying to convert it
+    try:
+        dt = datetime.strptime(date_info, "%m/%d/%y")
+        return dt
+    except:
+        return date_info
 
 # loading enviorment vars
 load_dotenv()
@@ -113,9 +122,25 @@ async def team(ctx, team_name):
         await ctx.send(embed=embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, an error has occured D:", f"are you sure that team {team_name} exsits or is registered for this season?"))
 
 #TODO: get page funtionality working first
-#@bot.command()
-#async def skills(ctx, team_name):
-    #data = requestHandler.get_team_skills(team_name)
+@bot.command()
+async def skills(ctx, team_name):
+    data = requestHandler.get_team_skills(team_name)
+
+    if not data:
+        error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, f"Team {team_name} has no skills", "This team might not have any skills runs for this season.")
+        return await ctx.send(embed=error_embed)
+
+    # creating skills embed
+    skills_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, f"Skills for {team_name}:", "")
+
+    # adding fields to embed
+    skills_embed.add_field(name="Driver Skills 🏎️:", value=f"**{data["driver"]}**", inline=False)
+    skills_embed.add_field(name="Programming Skills 👨‍💻:", value=f"**{data["programming"]}**", inline=False)
+    skills_embed.add_field(name="Total Skills 📊:", value=f"**{data["total_score"]}**", inline=False)
+
+    #sending the embed
+    await ctx.send(embed=skills_embed)   
+
 
 @bot.command()
 async def awards(ctx, team_name):
@@ -163,8 +188,8 @@ async def events(ctx, team):
         msg = f"Events attended by **{team}** in the season: **{season_name}**:"
         data_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, msg, "")
         for event in data:
-            formated_event = f"{event['name']} ({event['start'][:10]})\n"
-            data_embed.add_field(name=f"Event {data.index(event) + 1}:", value=formated_event, inline=False)
+            formated_event = f"- **Date:** ({convert_date(event.get("start", "")[:10])})\n"
+            data_embed.add_field(name=f"Event {data.index(event) + 1}: {event.get("name")}", value=formated_event, inline=False)
         await ctx.send(embed=data_embed)
     else:
         error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, an error has occured D:", f"No event data found for team `{team}`.")
