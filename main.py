@@ -150,7 +150,7 @@ async def awards(ctx, team_name):
             )
         await ctx.send(embed=award_embed)
     else:
-        error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, but an error occured D:", f"are you sure that team {team_name} has an award?")
+        error_embed = embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "No awards found 😭", f"are you sure that team {team_name} has an award?")
         await ctx.send(embed=error_embed)
 
 @bot.command()
