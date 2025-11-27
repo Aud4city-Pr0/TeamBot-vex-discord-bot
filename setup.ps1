@@ -8,7 +8,7 @@ $PYPROJECT_FILE="pyproject.toml"
 functions Install-Packages() {
     if(Test-Path -Path $PYPROJECT_FILE) {
         Write-Host "pyproject exists, installing packages now"
-        python3 -m pip install -e .
+        python3 -m pip install -r $PYPROJECT_FILE
     } else {
         Write-Host "pyproject doesn't exist, please create one or download from the repo and re-run the script"
         exit

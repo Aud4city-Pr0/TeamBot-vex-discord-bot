@@ -3,14 +3,14 @@
 
 # vars
 VENV_PATH=".venv"
-PYPROJECT_FILE="pyproject.toml"
+PYPROJECT_FILE="requirements.txt"
 
 # package install function
 install_modules() {
     # checking to see if pyproject exists
     if [[ -f "$PYPROJECT_FILE" ]]; then
         echo "pyproject exists, installing packages now"
-        pip install -e .
+        pip install -r $PYPROJECT_FILE
     else
         echo "pyproject doesn't exist, please create one or download from the repo"
         exit
@@ -24,7 +24,7 @@ if [[ -d "$VENV_PATH" ]]; then
     install_modules
 else
     echo "venv does not exist, creating one now."
-    python3 -m venv venv
+    python3 -m venv .venv
     echo "installing packages..."
     install_modules
 fi
