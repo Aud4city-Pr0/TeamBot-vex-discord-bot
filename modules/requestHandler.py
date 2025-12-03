@@ -120,10 +120,12 @@ def get_team_id(team_number):
     
 #match record functons
 def get_match_record_from_team(team):
+    win_rate = 0
     Record_Dictoinary = {
         "wins": 0,
         "losses": 0,
-        "ties": 0
+        "ties": 0,
+        "winrate": 0
     }
     #getting the season id and team id
     season_id = get_current_season_id()
@@ -157,10 +159,18 @@ def get_match_record_from_team(team):
         total_losses += event_ranking.get("losses", 0)
         total_ties += event_ranking.get("ties", 0)
     
+    # catulating team winrate
+    total_matches = total_wins + total_losses + total_ties
+    if total_matches > 0:
+        win_rate = round(((total_wins + 0.5 * total_ties) / total_matches * 100), 2)
+    else:
+        win_rate = 0
+
     #returning the data
     Record_Dictoinary["wins"] = total_wins
     Record_Dictoinary["losses"] = total_losses
     Record_Dictoinary["ties"] = total_ties
+    Record_Dictoinary["winrate"] = win_rate
     return Record_Dictoinary
     
 

@@ -145,7 +145,8 @@ async def team(ctx, team_name):
         team_record_embed = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Team Statistics:", f"""
                        \n- 🏆️ **Matches Won:** {record_info.get("wins")} 
                        \n- 😔 **Matches Lost:** {record_info.get("losses")}
-                       \n- 🤝 **Matches Tied:** {record_info.get("ties")}""")
+                       \n- 🤝 **Matches Tied:** {record_info.get("ties")}
+                       \n- 🏁 **Winrate**: {record_info.get("winrate")}%""")
         await ctx.send(embed=team_record_embed)
     else:
         await ctx.send(embed=embedParser.create_embed_dialogue(EmbedDialougeType.ERROR_DIALOGUE, "Sorry, an error has occured D:", f"are you sure that team {team_name} exsits or is registered for this season?"))
