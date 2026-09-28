@@ -125,7 +125,6 @@ async def team(ctx, team_name):
     bot_name = ""
     # getting data
     data, record_info = requestHandler.get_team_from_number(team_name)
-
     #checking to see if data is real and if it is a dictionary
     if data != None and type(data) is dict:
         #checking to see if bot name exsits

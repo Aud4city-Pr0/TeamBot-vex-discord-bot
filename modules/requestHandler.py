@@ -13,7 +13,7 @@ load_dotenv()
 API_TOKEN = os.getenv('ROBOT_EVENTS_API_TOKEN')
 
 # base url
-BASE_URL = "https://www.robotevents.com/api/v2"
+BASE_URL = "https://events.vex.com/api/v2"
 
 # endpoint Enum class, only used for basic api interactions
 class EndpointType(Enum):
