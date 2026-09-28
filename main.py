@@ -104,7 +104,7 @@ async def info(ctx):
     embed_to_say = embedParser.create_embed_dialogue(EmbedDialougeType.INFO_DIALOUGE, "Bot Commands:", """
                    \n 1. !info - Displays commands that are used with this bot
                    \n 2. !team - Looks for VEX V5 teams based on their number and shows statistics about them (eg. 4303D)
-                   \n 3. !event - Shows the current events that a team is enrolled in/has attended for the current season
+                   \n 3. !events - Shows the current events that a team is enrolled in/has attended for the current season
                    \n 4. !version - States the current version of the bot
                    \n 5. !skills - Gets skills information about a team from a certain season
                    \n 6. !awards - Gets award information about a team from a certain season""")
